@@ -4,7 +4,6 @@ package logger
 
 import (
 	"fmt"
-	"log"
 	"runtime/debug"
 )
 
@@ -39,10 +38,10 @@ func _logFormat(prefix string, format string, v ...interface{}) {
 				LogWarn("logger logchan process,waitchan:%d/%d.", wait, cap(logchan))
 			}
 		default: //阻塞了，写入默认输出文件
-			log.Println(s)
+			fmt.Println(s)
 		}
 	} else { //没有初始化，调用默认打印
-		log.Println(s)
+		fmt.Println(s)
 	}
 }
 

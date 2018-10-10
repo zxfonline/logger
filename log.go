@@ -24,7 +24,11 @@ var (
 )
 
 //  初始化Log 文件，不调用的话，就不会写入文件
-func InitLogFile(wg *sync.WaitGroup, filename string) {
+func InitLogFile(wg *sync.WaitGroup, filename, logpath string) {
+	if len(logpath) == 0 {
+		logpath = base_url
+	}
+	base_url = logpath
 	_filename = filename
 	var err error
 	logFile, err = fileutil.OpenFile(filepath.Join(base_url, filename+"_"+time.Now().Format("20060102")+".log"), fileutil.DefaultFileFlag, fileutil.DefaultFileMode)

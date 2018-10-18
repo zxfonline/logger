@@ -58,7 +58,7 @@ func writeloop(wg *sync.WaitGroup) {
 		wg.Done()
 	}()
 	//添加跟踪信息
-	// proxyTrace := trace.TraceStart("Goroutine", "Logger Start")
+	// proxyTrace := trace.TraceStart("Goroutine", "Logger Start", false)
 	// defer trace.TraceFinish(proxyTrace)
 	now := time.Now()
 	pm := time.NewTimer(time.Duration(timefix.NextMidnight(now, 1).Unix()-now.Unix()) * time.Second)

@@ -3,20 +3,21 @@ package logger
 import (
 	"sync"
 
-	"github.com/zxfonline/chanutil"
-	"github.com/zxfonline/fileutil"
-	"github.com/zxfonline/timefix"
-	// "github.com/zxfonline/trace"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/zxfonline/chanutil"
+	"github.com/zxfonline/expvar"
+	"github.com/zxfonline/fileutil"
+	"github.com/zxfonline/timefix"
 )
 
 var (
 	logFile    *os.File
 	fileLogger *log.Logger
-	logchan    = make(chan string, 51200)
+	logchan    chan string
 	base_url   = "../log/"
 	PRINT      = false
 	_filename  string
@@ -39,6 +40,8 @@ func InitLogFile(wg *sync.WaitGroup, filename, logpath string) {
 	// log.SetOutput(logFile)
 	fileLogger = log.New(logFile, "", log.Ldate|log.Lmicroseconds)
 	stopD = chanutil.NewDoneChan()
+	logchan = make(chan string, 51200)
+	expvar.RegistChanMonitor("chanLog", logchan)
 	go writeloop(wg)
 }
 

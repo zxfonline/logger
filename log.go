@@ -25,7 +25,7 @@ var (
 )
 
 //  初始化Log 文件，不调用的话，就不会写入文件
-func InitLogFile(wg *sync.WaitGroup, filename, logpath string) {
+func InitLogFile(filename, logpath string) {
 	if len(logpath) == 0 {
 		logpath = base_url
 	}
@@ -42,7 +42,7 @@ func InitLogFile(wg *sync.WaitGroup, filename, logpath string) {
 	stopD = chanutil.NewDoneChan()
 	logchan = make(chan string, 51200)
 	expvar.RegistChanMonitor("chanLog", logchan)
-	go writeloop(wg)
+	go writeloop()
 }
 
 func GetLogger() *log.Logger {
@@ -54,11 +54,9 @@ func CloseLogFile() {
 	stopD.SetDone()
 }
 
-func writeloop(wg *sync.WaitGroup) {
-	wg.Add(1)
+func writeloop() {
 	defer func() {
 		logFile.Close()
-		wg.Done()
 	}()
 	//添加跟踪信息
 	// proxyTrace := trace.TraceStart("Goroutine", "Logger Start", false)

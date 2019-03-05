@@ -35,7 +35,7 @@ func _logFormat(prefix string, format string, v ...interface{}) {
 		select {
 		case logchan <- s: //正式环境下，异步写文件
 			if wait := len(logchan); wait > cap(logchan)/10*5 && wait%100 == 0 {
-				LogWarn("logger logchan process,waitchan:%d/%d.", wait, cap(logchan))
+				fmt.Printf("logger logchan process,waitchan:%d/%d.\n", wait, cap(logchan))
 			}
 		default: //阻塞了，写入默认输出文件
 			fmt.Println(s)

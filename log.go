@@ -40,7 +40,7 @@ func InitLogFile(filename, logpath string) {
 	// log.SetOutput(logFile)
 	fileLogger = log.New(logFile, "", log.Ldate|log.Lmicroseconds)
 	stopD = chanutil.NewDoneChan()
-	logchan = make(chan string, 51200)
+	logchan = make(chan string, 0x10000)
 	expvar.RegistChanMonitor("chanLog", logchan)
 	go writeloop()
 }

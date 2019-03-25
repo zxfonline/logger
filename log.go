@@ -22,6 +22,7 @@ var (
 	PRINT      = false
 	_filename  string
 	stopD      chanutil.DoneChan
+	wg         = &sync.WaitGroup{}
 )
 
 //  初始化Log 文件，不调用的话，就不会写入文件
@@ -43,20 +44,30 @@ func InitLogFile(filename, logpath string) {
 	logchan = make(chan string, 0x10000)
 	expvar.RegistChanMonitor("chanLog", logchan)
 	go writeloop()
+	onceClose = &sync.Once{}
 }
 
 func GetLogger() *log.Logger {
 	return fileLogger
 }
 
+var onceClose *sync.Once
+
 // CloseLogFile 关闭日志文件
 func CloseLogFile() {
-	stopD.SetDone()
+	if onceClose != nil {
+		onceClose.Do(func() {
+			stopD.SetDone()
+			wg.Wait()
+		})
+	}
 }
 
 func writeloop() {
+	wg.Add(1)
 	defer func() {
 		logFile.Close()
+		wg.Done()
 	}()
 	//添加跟踪信息
 	// proxyTrace := trace.TraceStart("Goroutine", "Logger Start", false)
